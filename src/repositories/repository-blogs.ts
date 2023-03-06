@@ -1,6 +1,6 @@
 import {BlogType} from "../types";
 
-export const arrBlogs:BlogType[] = [{
+export const arrBlogs: BlogType[] = [{
     id: "1",
     name: "Andrey",
     description: "just men",
@@ -21,11 +21,33 @@ export const arrBlogs:BlogType[] = [{
 
 
 export const blogsControl = {
-    getAllBlogs(){
+    getAllBlogs() {
         return arrBlogs
     },
-    getBlogById(id:string){
+    getBlogById(id: string) {
         return arrBlogs.find((it) => it.id.toString() === id)
-    }
+    },
+    createBlog(body: BlogType) {
+        const newBlog = {
+            id: (+(new Date())).toString(),
+            name: body.name,
+            description: body.description,
+            websiteUrl: body.websiteUrl
+        }
+        arrBlogs.push(newBlog)
+        return newBlog.id
 
+    },
+    changeBlog(id: string, body: BlogType) {
+        const findBlog = blogsControl.getBlogById(id)
+        if (findBlog) {
+            findBlog.name = body.name
+            findBlog.description = body.description
+            findBlog.websiteUrl = body.websiteUrl
+
+            return true
+        } else {
+            return false
+        }
+    }
 }

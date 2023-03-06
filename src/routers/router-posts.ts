@@ -12,7 +12,25 @@ postsRouter.get('/', (req: Request, res: Response) => {
 postsRouter.get('/:id', (req: Request, res: Response) => {
     const findBlog = postsControl.getPostById(req.params.id)
     if (findBlog) {
-        res.send(findBlog)
+        res.status(HTTP_STATUSES.OK200).send(findBlog)
+    } else {
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND)
+    }
+})
+//-------------------POST---------------//
+postsRouter.post('/',(req: Request, res: Response) => {
+ const newPostId = postsControl.createPost(req.body)
+    if(newPostId){
+        res.status(HTTP_STATUSES.OK200).send(newPostId)
+    } else {
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND)
+    }
+})
+//-------------------PUT---------------//
+postsRouter.post('/:id',(req: Request, res: Response) => {
+  const isChangePost = postsControl.changePost(req.params.id, req.body)
+    if(isChangePost){
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT)
     } else {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND)
     }

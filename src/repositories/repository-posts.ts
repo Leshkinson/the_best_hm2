@@ -1,4 +1,5 @@
 import {PostType} from "../types";
+import {blogsControl} from "./repository-blogs";
 
 
 export const arrPosts: PostType[] = [ {
@@ -32,6 +33,39 @@ export const postsControl = {
     },
     getPostById(id:string){
         return arrPosts.find((it) => it.id.toString() === id)
+    },
+    createPost(body: PostType){
+        const findBlog = blogsControl.getBlogById(body.blogId)
+        if(findBlog){
+            const newPost = {
+                id: (+(new Date())).toString(),
+                title: body.title,
+                shortDescription:body.shortDescription,
+                content: body.content,
+                blogId: body.blogId,
+                blogName: findBlog.name
+            }
+            arrPosts.push(newPost)
+            return newPost.id
+        } else {
+            return null
+        }
+    },
+    changePost(id: string, body:PostType){
+        const findPost = postsControl.getPostById(id)
+        const findBlog = blogsControl.getBlogById(body.blogId)
+        if(findPost && findBlog){
+            findPost.blogId = body.blogId
+            findPost.content = body.content
+            findPost.title = body.title
+            findPost.shortDescription = body.shortDescription
+            findPost.blogName = findBlog.name
+
+            return true
+        } else{
+            return  false
+        }
+
     }
 
 }
