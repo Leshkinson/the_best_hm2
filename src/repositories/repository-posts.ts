@@ -2,7 +2,7 @@ import {PostType} from "../types";
 import {blogsControl} from "./repository-blogs";
 
 
-export const arrPosts: PostType[] = [ {
+export let arrPosts: PostType[] = [ {
     id: "1",
     title: "Super title",
     shortDescription: "bad men",
@@ -66,6 +66,14 @@ export const postsControl = {
             return  false
         }
 
+    },
+    deletePost(id:string){
+        const findPost = postsControl.getPostById(id)
+        if(findPost){
+            arrPosts = arrPosts.filter(el=> el.id !== id)
+            return  true
+        }
+        return false
     }
 
 }

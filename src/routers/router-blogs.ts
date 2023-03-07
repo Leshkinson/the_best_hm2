@@ -11,7 +11,7 @@ blogsRouter.get('/', (req: Request, res: Response) => {
 blogsRouter.get('/:id', (req: Request, res: Response) => {
     const findBlog = blogsControl.getBlogById(req.params.id)
     if (findBlog) {
-        res.send(findBlog)
+        res.status(HTTP_STATUSES.OK200).send(findBlog)
     } else {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND)
     }
@@ -21,9 +21,18 @@ blogsRouter.post('/',(req: Request, res: Response) => {
         res.status(HTTP_STATUSES.OK200).send(blogsControl.createBlog(req.body))
 })
 //-------------------PUT---------------//
-blogsRouter.post('/:id',(req: Request, res: Response) => {
+blogsRouter.put('/:id',(req: Request, res: Response) => {
     const isChangeBlog = blogsControl.changeBlog(req.params.id, req.body)
-    if(isChangeBlog){
+    if(isChangeBlog)
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT)
+
+    res.sendStatus(HTTP_STATUSES.NOT_FOUND)
+
+})
+//-------------------DELETE---------------//
+blogsRouter.delete('/:id', (req: Request, res: Response) => {
+    const isDeleted = blogsControl.deleteBlog(req.params.id)
+    if (isDeleted) {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT)
     } else {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND)

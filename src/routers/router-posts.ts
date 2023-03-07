@@ -35,3 +35,12 @@ postsRouter.post('/:id',(req: Request, res: Response) => {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND)
     }
 })
+//-------------------DELETE---------------//
+postsRouter.delete('/:id', (req: Request, res: Response) => {
+    const isDeleted = postsControl.deletePost(req.params.id)
+    if (isDeleted) {
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT)
+    } else {
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND)
+    }
+})
