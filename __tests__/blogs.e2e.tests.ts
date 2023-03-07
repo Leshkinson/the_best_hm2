@@ -32,50 +32,6 @@ describe('/videos', () => {
             .expect(HTTP_STATUSES.OK200, [...blogsControl.getAllBlogs()])
     })
 
-
-    //
-    // it('PUT, trying to change video with wrong id', async () => {
-    //     await request(app)
-    //         .put('/videos' + 111)
-    //         .send(testDataForPut)
-    //         .expect(HTTP_STATUSES.NOT_FOUND)
-    // })
-    //
-    // it('PUT, trying to change video with not valid title', async () => {
-    //     await request(app)
-    //         .put('/videos/' + 4)
-    //         .send({...testDataForPut, title: 213})
-    //         .expect(HTTP_STATUSES.BAD_REQUEST_400, {
-    //             errorsMessages:
-    //                 [{
-    //                     message: ERRORS.InvalidDatType,
-    //                     field: "title"
-    //                 }]
-    //         })
-    // })
-    //
-    // it('PUT, trying to change video with empty availableResolutions', async () => {
-    //     await request(app)
-    //         .put('/videos/' + 4)
-    //         .send({...testDataForPut, availableResolutions: []})
-    //         .expect(HTTP_STATUSES.BAD_REQUEST_400, {
-    //             errorsMessages: [{
-    //                 message: ERRORS.EmptyArray,
-    //                 field: "availableResolutions"
-    //             }]
-    //         })
-    // })
-    //
-    // it('PUT, successful video change', async () => {
-    //     await request(app)
-    //         .put('/videos/' + 4)
-    //         .send(testDataForPut)
-    //         .expect(HTTP_STATUSES.NO_CONTENT)
-    //
-    //     expect(controlData.getAllVideos().filter(el => el.id === 4)[0].title).toBe("Karl Marx")
-    //
-    // })
-    //
     it('DELETE, trying remove blogs with wrong id', async () => {
         const arrLength = postsControl.getAllPosts().length
         await request(app)

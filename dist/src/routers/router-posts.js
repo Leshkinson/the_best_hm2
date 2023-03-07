@@ -4,6 +4,8 @@ exports.postsRouter = void 0;
 const express_1 = require("express");
 const http_statuses_1 = require("../http_statuses");
 const repository_posts_1 = require("../repositories/repository-posts");
+const validators_1 = require("../validator/validators");
+const input_validation_middleware_1 = require("../middleware/input-validation-middleware");
 exports.postsRouter = (0, express_1.Router)({});
 //-------------------GET---------------//
 exports.postsRouter.get('/', (req, res) => {
@@ -19,7 +21,7 @@ exports.postsRouter.get('/:id', (req, res) => {
     }
 });
 //-------------------POST---------------//
-exports.postsRouter.post('/', (req, res) => {
+exports.postsRouter.post('/', validators_1.postValidations, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const newPostId = repository_posts_1.postsControl.createPost(req.body);
     if (newPostId) {
         res.status(http_statuses_1.HTTP_STATUSES.OK200).send(newPostId);

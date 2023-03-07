@@ -1,6 +1,8 @@
 import {Request, Response, Router} from "express";
 import {HTTP_STATUSES} from "../http_statuses";
 import {blogsControl} from "../repositories/repository-blogs";
+import {blogValidations} from "../validator/validators";
+import {inputValidationMiddleware} from "../middleware/input-validation-middleware";
 
 export const blogsRouter = Router({})
 
@@ -17,11 +19,11 @@ blogsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 //-------------------POST---------------//
-blogsRouter.post('/',(req: Request, res: Response) => {
+blogsRouter.post('/',blogValidations, inputValidationMiddleware,(req: Request, res: Response) => {
         res.status(HTTP_STATUSES.OK200).send(blogsControl.createBlog(req.body))
 })
 //-------------------PUT---------------//
-blogsRouter.put('/:id',(req: Request, res: Response) => {
+blogsRouter.put('/:id',blogValidations, inputValidationMiddleware,(req: Request, res: Response) => {
     const isChangeBlog = blogsControl.changeBlog(req.params.id, req.body)
     if(isChangeBlog)
         res.sendStatus(HTTP_STATUSES.NO_CONTENT)
