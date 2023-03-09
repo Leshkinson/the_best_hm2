@@ -48,12 +48,15 @@ export const blogsControl = {
         }
         return false;
     },
-    deleteBlog(id:string){
+    deleteBlog(id: string) {
         const findBlog = blogsControl.getBlogById(id)
-        if(findBlog){
-             arrBlogs = arrBlogs.filter(el=> el.id !== id)
-            return  true
+        if (findBlog) {
+            arrBlogs = arrBlogs.filter(el => el.id !== id)
+            return true
         }
         return false
+    },
+    deleteAllBlogs() {
+        arrBlogs = []
     }
 }

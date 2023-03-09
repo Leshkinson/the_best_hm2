@@ -74,6 +74,9 @@ export const postsControl = {
             return  true
         }
         return false
+    },
+    deleteAllPosts(){
+        arrPosts= []
     }
 
 }
