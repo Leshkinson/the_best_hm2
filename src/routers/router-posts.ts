@@ -24,7 +24,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
 postsRouter.post('/', authorizationGuard, postValidations, inputValidationMiddleware, (req: Request, res: Response) => {
     const newPostId = postsControl.createPost(req.body)
     if (newPostId) {
-        res.status(HTTP_STATUSES.OK200).send(newPostId)
+        res.status(HTTP_STATUSES.CREATED_201).send(newPostId)
     } else {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND)
     }
