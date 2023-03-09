@@ -11,7 +11,7 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
     const errors = validationResult(req).formatWith(errorFormatter)
     req.headers.authorization;
     if (!errors.isEmpty()) {
-        res.status(400).send({errorsMessages: errors.array()})
+        res.status(400).send({errorsMessages: errors.array({onlyFirstError: true})})
         return
     }
     next()
