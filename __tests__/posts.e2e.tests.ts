@@ -3,20 +3,12 @@ import {app} from "../setting";
 import {HTTP_STATUSES} from "../src/http_statuses";
 import {postsControl} from "../src/repositories/repository-posts";
 
-const testDataForPut = {
-    "title": 'Karl Marx',
-    "author": "Dia",
-    "availableResolutions": ["P2160"],
-    "canBeDownloaded": true,
-    "minAgeRestriction": 17,
-    "publicationDate": "2023-03-02T10:43:11.595Z"
-}
 
 const testNewPost = {
-    "title": "new post",
+    "title": "123",
     "shortDescription": "new post",
     "content": "new post",
-    "blogId": "1"
+    "blogId": "2"
 }
 
 describe('/videos', () => {
@@ -31,50 +23,98 @@ describe('/videos', () => {
             .expect(HTTP_STATUSES.OK200, [...postsControl.getAllPosts()])
     })
 
+    it('POST, trying to create post unauthorized', async () => {
+        await request(app)
+            .post('/posts')
+            .send(testNewPost)
+            .expect(HTTP_STATUSES.UNAUTHORIZED_401)
+    })
+    it('POST, trying to create post', async () => {
+        await request(app)
+            .post('/posts')
+            .auth('admin', 'qwerty', {type: "basic"})
+            .send(testNewPost)
+            .expect(HTTP_STATUSES.OK200)
 
-    //
-    // it('PUT, trying to change video with wrong id', async () => {
-    //     await request(app)
-    //         .put('/videos' + 111)
-    //         .send(testDataForPut)
-    //         .expect(HTTP_STATUSES.NOT_FOUND)
-    // })
-    //
-    // it('PUT, trying to change video with not valid title', async () => {
-    //     await request(app)
-    //         .put('/videos/' + 4)
-    //         .send({...testDataForPut, title: 213})
-    //         .expect(HTTP_STATUSES.BAD_REQUEST_400, {
-    //             errorsMessages:
-    //                 [{
-    //                     message: ERRORS.InvalidDatType,
-    //                     field: "title"
-    //                 }]
-    //         })
-    // })
-    //
-    // it('PUT, trying to change video with empty availableResolutions', async () => {
-    //     await request(app)
-    //         .put('/videos/' + 4)
-    //         .send({...testDataForPut, availableResolutions: []})
-    //         .expect(HTTP_STATUSES.BAD_REQUEST_400, {
-    //             errorsMessages: [{
-    //                 message: ERRORS.EmptyArray,
-    //                 field: "availableResolutions"
-    //             }]
-    //         })
-    // })
-    //
-    // it('PUT, successful video change', async () => {
-    //     await request(app)
-    //         .put('/videos/' + 4)
-    //         .send(testDataForPut)
-    //         .expect(HTTP_STATUSES.NO_CONTENT)
-    //
-    //     expect(controlData.getAllVideos().filter(el => el.id === 4)[0].title).toBe("Karl Marx")
-    //
-    // })
-    //
+
+        const lastElement = postsControl.getAllPosts().length - 1
+        expect(postsControl.getAllPosts()[lastElement].content).toBe("new post")
+    })
+
+    it('POST, trying to create post with exist blog id', async () => {
+        await request(app)
+            .post('/posts')
+            .auth('admin', 'qwerty', {type: "basic"})
+            .send({...testNewPost, blogId: "5"})
+            .expect(HTTP_STATUSES.BAD_REQUEST_400, {
+                "errorsMessages": [
+                    {
+                        "message": "No blog!",
+                        "field": "blogId"
+                    }
+                ]
+            })
+    })
+
+    it('PUT, trying to change post with wrong id', async () => {
+        await request(app)
+            .put('/posts/' + 111)
+            .auth('admin', 'qwerty', {type: "basic"})
+            .send(testNewPost)
+            .expect(HTTP_STATUSES.NOT_FOUND)
+    })
+
+    it('PUT, trying to change post unauthorized', async () => {
+        await request(app)
+            .put('/posts/' + 1)
+            .send(testNewPost)
+            .expect(HTTP_STATUSES.UNAUTHORIZED_401)
+    })
+
+    it('PUT, trying to change post with not valid body', async () => {
+        await request(app)
+            .put('/posts/' + 2)
+            .auth('admin', 'qwerty', {type: "basic"})
+            .send({
+                "title": 123,
+                "shortDescription": "",
+                "content": 1234,
+                "blogId": "5"
+            })
+            .expect(HTTP_STATUSES.BAD_REQUEST_400, {
+                "errorsMessages": [
+                    {
+                        "message": "Invalid type",
+                        "field": "title"
+                    },
+                    {
+                        "message": "Not correct length",
+                        "field": "shortDescription"
+                    },
+                    {
+                        "message": "Field must not be empty",
+                        "field": "shortDescription"
+                    },
+                    {
+                        "message": "Invalid type",
+                        "field": "content"
+                    },
+                    {
+                        "message": "No blog!",
+                        "field": "blogId"
+                    }
+                ]
+            })
+    })
+
+    it('PUT, success trying to change post with empty availableResolutions', async () => {
+        await request(app)
+            .put('/posts/' + 1)
+            .auth('admin', 'qwerty', {type: "basic"})
+            .send(testNewPost)
+            .expect(HTTP_STATUSES.NO_CONTENT)
+    })
+
     it('DELETE, trying remove post with wrong id', async () => {
         const arrLength = postsControl.getAllPosts().length
         await request(app)

@@ -4,5 +4,6 @@ export enum HTTP_STATUSES {
     NO_CONTENT = 204,
 
     BAD_REQUEST_400 = 400,
+    UNAUTHORIZED_401 = 401,
     NOT_FOUND = 404,
 }
