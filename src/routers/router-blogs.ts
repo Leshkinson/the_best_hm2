@@ -33,7 +33,7 @@ blogsRouter.put('/:id', authorizationGuard, blogValidations, inputValidationMidd
 
 })
 //-------------------DELETE---------------//
-blogsRouter.delete('/:id', (req: Request, res: Response) => {
+blogsRouter.delete('/:id', authorizationGuard, (req: Request, res: Response) => {
     const isDeleted = blogsControl.deleteBlog(req.params.id)
     if (isDeleted) {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT)

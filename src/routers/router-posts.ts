@@ -39,7 +39,7 @@ postsRouter.put('/:id', authorizationGuard, postValidations, inputValidationMidd
     }
 })
 //-------------------DELETE---------------//
-postsRouter.delete('/:id', (req: Request, res: Response) => {
+postsRouter.delete('/:id', authorizationGuard, (req: Request, res: Response) => {
     const isDeleted = postsControl.deletePost(req.params.id)
     if (isDeleted) {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT)
