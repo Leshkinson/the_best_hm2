@@ -35,7 +35,12 @@ export const blogsControl = {
             websiteUrl: body.websiteUrl
         }
         arrBlogs.push(newBlog)
-        return newBlog.id
+        return {
+            id: newBlog.id,
+            name: newBlog.name,
+            description: newBlog.description,
+            websiteUrl: newBlog.websiteUrl
+        }
     },
     changeBlog(id: string, body: BlogType) {
         const findBlog = blogsControl.getBlogById(id)

@@ -21,7 +21,7 @@ blogsRouter.get('/:id', (req: Request, res: Response) => {
 })
 //-------------------POST---------------//
 blogsRouter.post('/', authorizationGuard, blogValidations, inputValidationMiddleware, (req: Request, res: Response) => {
-    res.status(HTTP_STATUSES.OK200).send(blogsControl.createBlog(req.body))
+    res.status(HTTP_STATUSES.CREATED_201).send(blogsControl.createBlog(req.body))
 })
 //-------------------PUT---------------//
 blogsRouter.put('/:id', authorizationGuard, blogValidations, inputValidationMiddleware, (req: Request, res: Response) => {
