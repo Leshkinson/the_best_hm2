@@ -4,39 +4,71 @@ import {HTTP_STATUSES} from "../src/http_statuses";
 import {postsControl} from "../src/repositories/repository-posts";
 import {blogsControl} from "../src/repositories/repository-blogs";
 
-const testDataForPut = {
-    "title": 'Karl Marx',
-    "author": "Dia",
-    "availableResolutions": ["P2160"],
-    "canBeDownloaded": true,
-    "minAgeRestriction": 17,
-    "publicationDate": "2023-03-02T10:43:11.595Z"
+
+const testBlogData = {
+    "name": "string",
+    "description": "string",
+    "websiteUrl": "https://cTBu0tXl3ZLGzrfwn6vjvT5sCnR7ORtcBN4M9nWhfsPrAOIxjgE.7ovu57WGoigw.FluQDBkmr2aWiuLaoRcxwkwQlh9"
 }
 
-const testNewPost = {
-    "title": "new post",
-    "shortDescription": "new post",
-    "content": "new post",
-    "blogId": "1"
-}
-
-describe('/videos', () => {
+describe('/blogs', () => {
 
     beforeAll(async () => {
         await request(app).delete('/__test__/data')
     })
 
-    it('GET, should return posts[]', async () => {
+    it('GET, should return blogs[]', async () => {
         await request(app)
             .get('/blogs')
             .expect(HTTP_STATUSES.OK200, [...blogsControl.getAllBlogs()])
+    })
+
+    it('GET, should return blog bu id', async () => {
+        await request(app)
+            .get('/blogs/' + 1)
+            .expect(HTTP_STATUSES.OK200, blogsControl.getBlogById('1'))
+    })
+
+    it('PUT, trying to change blog with not valid body', async () => {
+        await request(app)
+            .put('/blogs/' + 2)
+            .auth('admin', 'qwerty', {type: "basic"})
+            .send({
+                "name": 123,
+                "description": 123,
+                "websiteUrl": "asddsLGzrfwn6vjvT5sasdasd"
+            })
+            .expect(HTTP_STATUSES.BAD_REQUEST_400, {
+                "errorsMessages": [
+                    {
+                        "message": "Invalid type",
+                        "field": "name"
+                    },
+                    {
+                        "message": "Invalid type",
+                        "field": "description"
+                    },
+                    {
+                        "message": "Is not URL!",
+                        "field": "websiteUrl"
+                    }
+                ]
+            })
+    })
+
+    it('PUT, success trying to change blog', async () => {
+        await request(app)
+            .put('/blogs/' + 1)
+            .auth('admin', 'qwerty', {type: "basic"})
+            .send(testBlogData)
+            .expect(HTTP_STATUSES.NO_CONTENT)
     })
 
     it('DELETE, trying remove blogs with wrong id', async () => {
         const arrLength = postsControl.getAllPosts().length
         await request(app)
             .delete('/blogs/' + 111)
-            .send(testNewPost)
+            .auth('admin', 'qwerty', {type: "basic"})
             .expect(HTTP_STATUSES.NOT_FOUND)
 
         await request(app)
@@ -47,7 +79,7 @@ describe('/videos', () => {
     it('DELETE, successful remove blogs', async () => {
         await request(app)
             .delete('/blogs/' + 1)
-            .send(testNewPost)
+            .auth('admin', 'qwerty', {type: "basic"})
             .expect(HTTP_STATUSES.NO_CONTENT)
     })
 })

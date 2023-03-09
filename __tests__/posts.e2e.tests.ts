@@ -11,7 +11,7 @@ const testNewPost = {
     "blogId": "2"
 }
 
-describe('/videos', () => {
+describe('/posts', () => {
 
     beforeAll(async () => {
         await request(app).delete('/__test__/data')
@@ -34,7 +34,7 @@ describe('/videos', () => {
             .post('/posts')
             .auth('admin', 'qwerty', {type: "basic"})
             .send(testNewPost)
-            .expect(HTTP_STATUSES.OK200)
+            .expect(HTTP_STATUSES.CREATED_201)
 
 
         const lastElement = postsControl.getAllPosts().length - 1
@@ -92,10 +92,6 @@ describe('/videos', () => {
                         "field": "shortDescription"
                     },
                     {
-                        "message": "Field must not be empty",
-                        "field": "shortDescription"
-                    },
-                    {
                         "message": "Invalid type",
                         "field": "content"
                     },
@@ -107,7 +103,7 @@ describe('/videos', () => {
             })
     })
 
-    it('PUT, success trying to change post with empty availableResolutions', async () => {
+    it('PUT, success trying to change post', async () => {
         await request(app)
             .put('/posts/' + 1)
             .auth('admin', 'qwerty', {type: "basic"})
@@ -119,6 +115,7 @@ describe('/videos', () => {
         const arrLength = postsControl.getAllPosts().length
         await request(app)
             .delete('/posts/' + 111)
+            .auth('admin', 'qwerty', {type: "basic"})
             .send(testNewPost)
             .expect(HTTP_STATUSES.NOT_FOUND)
 
@@ -130,6 +127,7 @@ describe('/videos', () => {
     it('DELETE, successful remove posts', async () => {
         await request(app)
             .delete('/posts/' + 1)
+            .auth('admin', 'qwerty', {type: "basic"})
             .send(testNewPost)
             .expect(HTTP_STATUSES.NO_CONTENT)
     })
