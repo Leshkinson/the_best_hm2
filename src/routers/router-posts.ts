@@ -3,6 +3,7 @@ import {HTTP_STATUSES} from "../http_statuses";
 import {postsControl} from "../repositories/repository-posts";
 import {blogValidations, postValidations} from "../validator/validators";
 import {inputValidationMiddleware} from "../middleware/input-validation-middleware";
+import {authorizationGuard} from "../middleware/authorization-guard";
 
 
 export const postsRouter = Router({})
@@ -20,7 +21,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 //-------------------POST---------------//
-postsRouter.post('/', postValidations, inputValidationMiddleware, (req: Request, res: Response) => {
+postsRouter.post('/', authorizationGuard, postValidations, inputValidationMiddleware, (req: Request, res: Response) => {
     const newPostId = postsControl.createPost(req.body)
     if (newPostId) {
         res.status(HTTP_STATUSES.OK200).send(newPostId)
@@ -29,7 +30,7 @@ postsRouter.post('/', postValidations, inputValidationMiddleware, (req: Request,
     }
 })
 //-------------------PUT---------------//
-postsRouter.post('/:id',  (req: Request, res: Response) => {
+postsRouter.put('/:id', authorizationGuard, postValidations, inputValidationMiddleware, (req: Request, res: Response) => {
     const isChangePost = postsControl.changePost(req.params.id, req.body)
     if (isChangePost) {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT)

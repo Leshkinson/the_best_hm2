@@ -6,6 +6,7 @@ const http_statuses_1 = require("../http_statuses");
 const repository_posts_1 = require("../repositories/repository-posts");
 const validators_1 = require("../validator/validators");
 const input_validation_middleware_1 = require("../middleware/input-validation-middleware");
+const authorization_guard_1 = require("../middleware/authorization-guard");
 exports.postsRouter = (0, express_1.Router)({});
 //-------------------GET---------------//
 exports.postsRouter.get('/', (req, res) => {
@@ -21,7 +22,7 @@ exports.postsRouter.get('/:id', (req, res) => {
     }
 });
 //-------------------POST---------------//
-exports.postsRouter.post('/', validators_1.postValidations, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
+exports.postsRouter.post('/', authorization_guard_1.authorizationGuard, validators_1.postValidations, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const newPostId = repository_posts_1.postsControl.createPost(req.body);
     if (newPostId) {
         res.status(http_statuses_1.HTTP_STATUSES.OK200).send(newPostId);
@@ -31,7 +32,7 @@ exports.postsRouter.post('/', validators_1.postValidations, input_validation_mid
     }
 });
 //-------------------PUT---------------//
-exports.postsRouter.post('/:id', (req, res) => {
+exports.postsRouter.put('/:id', authorization_guard_1.authorizationGuard, validators_1.postValidations, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const isChangePost = repository_posts_1.postsControl.changePost(req.params.id, req.body);
     if (isChangePost) {
         res.sendStatus(http_statuses_1.HTTP_STATUSES.NO_CONTENT);

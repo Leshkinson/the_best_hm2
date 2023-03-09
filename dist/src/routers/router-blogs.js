@@ -6,6 +6,7 @@ const http_statuses_1 = require("../http_statuses");
 const repository_blogs_1 = require("../repositories/repository-blogs");
 const validators_1 = require("../validator/validators");
 const input_validation_middleware_1 = require("../middleware/input-validation-middleware");
+const authorization_guard_1 = require("../middleware/authorization-guard");
 exports.blogsRouter = (0, express_1.Router)({});
 //-------------------GET---------------//
 exports.blogsRouter.get('/', (req, res) => {
@@ -21,11 +22,11 @@ exports.blogsRouter.get('/:id', (req, res) => {
     }
 });
 //-------------------POST---------------//
-exports.blogsRouter.post('/', validators_1.blogValidations, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
+exports.blogsRouter.post('/', authorization_guard_1.authorizationGuard, validators_1.blogValidations, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     res.status(http_statuses_1.HTTP_STATUSES.OK200).send(repository_blogs_1.blogsControl.createBlog(req.body));
 });
 //-------------------PUT---------------//
-exports.blogsRouter.put('/:id', validators_1.blogValidations, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
+exports.blogsRouter.put('/:id', authorization_guard_1.authorizationGuard, validators_1.blogValidations, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const isChangeBlog = repository_blogs_1.blogsControl.changeBlog(req.params.id, req.body);
     if (isChangeBlog)
         res.sendStatus(http_statuses_1.HTTP_STATUSES.NO_CONTENT);

@@ -1,4 +1,5 @@
-import {body} from "express-validator";
+import {body, CustomValidator} from "express-validator";
+import {blogsControl} from "../repositories/repository-blogs";
 
 const titleValidation = body('title')
     .isString().withMessage('Invalid type')
@@ -21,6 +22,7 @@ const blogIdValidation = body('blogId')
     .isString().withMessage('Invalid type')
     .trim()
     .notEmpty().withMessage('Field must not be empty')
+    .custom(value => !!blogsControl.getBlogById(value)).withMessage('No blog!')
 
 
 const nameValidation = body('name')
